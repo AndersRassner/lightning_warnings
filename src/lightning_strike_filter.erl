@@ -1,10 +1,10 @@
 %% Stuff
 -module(lightning_strike_filter).
-%% Mamlo Area
+%% Malmo Area
 %% -define(LAT_MAX, 55.65).
 %% -define(LAT_MIN, 55.48).
-%% -define(LON_MAX, 12.75).
-%% -define(LON_MIN, 13.23).
+%% -define(LON_MAX, 13.23).
+%% -define(LON_MIN, 12.75).
 %% Testing
 -define(LAT_MAX, 59.9209).
 -define(LAT_MIN, 59.6728).
