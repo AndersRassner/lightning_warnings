@@ -1,6 +1,6 @@
 {application, lightning_warnings,
- [{description, "An OTP library"},
-  {vsn, "0.2.0"},
+ [{description, "Library to look for lightning strikes inside a given lat/lon area"},
+  {vsn, "0.2.1"},
   {registered, []},
   {applications,
    [kernel,
