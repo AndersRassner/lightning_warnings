@@ -9,7 +9,8 @@
 -define(LON_MAX, 13.23).
 -define(LON_MIN, 12.75).
 
--export([strike_filter/1, strike_filter/2]).
+-export([strike_filter/1, strike_filter/2,
+         get_time_of_latest_strike/1]).
 
 %% @equiv strike_filter/2
 -spec strike_filter(LightningStrikes) -> FilteredStrikes when
@@ -41,3 +42,21 @@ strike_filter([LightningStrike | Rest],
             Acc
     end,
     strike_filter(Rest, LatLonMap, NewAcc).
+
+get_time_of_latest_strike(LightningStrikes) ->
+    get_latest_strike(LightningStrikes).
+
+get_latest_strike([]) ->
+    {error, "Empty list passed to ~p", ?FUNCTION_NAME};
+get_latest_strike(LightningStrikes) ->
+    get_latest_strike(LightningStrikes, 0).
+get_latest_strike([], LatestStrike) ->
+    {ok, calendar:seconds_to_time(LatestStrike)};
+get_latest_strike([LightningStrike | Rest], LatestStrike) ->
+    #{<<"hours">> := Hours, <<"minutes">> := Minutes, <<"seconds">> := Seconds} = LightningStrike,
+    TimeInSeconds = calendar:time_to_seconds({Hours, Minutes, Seconds}),
+    NewLatestStrike = case (TimeInSeconds > LatestStrike) of
+        true -> TimeInSeconds;
+        _False -> LatestStrike
+    end,
+    get_latest_strike(Rest, NewLatestStrike).

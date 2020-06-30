@@ -13,7 +13,8 @@ check_for_strikes() ->
     LightningStrikes = maps:get(<<"values">>, FileContentDecoded),
     {ok, MalmoFilteredStrikes} = lightning_strike_filter:strike_filter(LightningStrikes),
     {ok, SkaneFilteredStrikes} = lightning_strike_filter:strike_filter(LightningStrikes, SkaneLatLon),
+    {ok, {Hour,Minute,Second}} = lightning_strike_filter:get_time_of_latest_strike(SkaneFilteredStrikes),
     io:format("Out of ~p lightning strikes, ~p were within the Default area\n",
         [length(LightningStrikes), length(MalmoFilteredStrikes)]),
-    io:format("Out of ~p lightning strikes, ~p were within the Skane area\n",
-        [length(LightningStrikes), length(SkaneFilteredStrikes)]).
+    io:format("Out of ~p lightning strikes, ~p were within the Skane area, with the latest strike occuring at ~2.10.0B:~2.10.0B:~2.10.0B\n",
+        [length(LightningStrikes), length(SkaneFilteredStrikes), Hour, Minute, Second]).
