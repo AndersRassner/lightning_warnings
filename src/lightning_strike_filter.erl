@@ -51,10 +51,10 @@ get_latest_strike([]) ->
 get_latest_strike(LightningStrikes) ->
     get_latest_strike(LightningStrikes, 0).
 get_latest_strike([], LatestStrike) ->
-    {ok, calendar:seconds_to_time(LatestStrike)};
+    {ok, calendar:gregorian_seconds_to_datetime(LatestStrike)};
 get_latest_strike([LightningStrike | Rest], LatestStrike) ->
-    #{<<"hours">> := Hours, <<"minutes">> := Minutes, <<"seconds">> := Seconds} = LightningStrike,
-    TimeInSeconds = calendar:time_to_seconds({Hours, Minutes, Seconds}),
+    #{<<"year">> := Year,<<"month">> := Month,<<"day">> := Day, <<"hours">> := Hours, <<"minutes">> := Minutes, <<"seconds">> := Seconds} = LightningStrike,
+    TimeInSeconds = calendar:datetime_to_gregorian_seconds({{Year, Month, Day}, {Hours, Minutes, Seconds}}),
     NewLatestStrike = case (TimeInSeconds > LatestStrike) of
         true -> TimeInSeconds;
         _False -> LatestStrike
