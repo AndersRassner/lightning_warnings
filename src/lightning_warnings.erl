@@ -13,9 +13,16 @@ check_for_strikes() ->
     LightningStrikes = maps:get(<<"values">>, FileContentDecoded),
     {ok, MalmoFilteredStrikes} = lightning_strike_filter:strike_filter(LightningStrikes),
     {ok, SkaneFilteredStrikes} = lightning_strike_filter:strike_filter(LightningStrikes, SkaneLatLon),
-    {ok, {{Year, Month, Day}, {Hour,Minute,Second}}} = lightning_strike_filter:get_time_of_latest_strike(SkaneFilteredStrikes),
-    DateTimeString = lists:flatten(io_lib:format("~2..0B:~2..0B:~2..0B ~4..0B-~2..0B-~2..0B", [Hour, Minute, Second, Year, Month, Day])),
     io:format("Out of ~p lightning strikes, ~p were within the Default area\n",
-        [length(LightningStrikes), length(MalmoFilteredStrikes)]),
-    io:format("Out of ~p lightning strikes, ~p were within the Skane area, with the latest strike occuring at ~s\n",
-        [length(LightningStrikes), length(SkaneFilteredStrikes), DateTimeString]).
+              [length(LightningStrikes), length(MalmoFilteredStrikes)]),
+    case SkaneFilteredStrikes of
+        [] ->
+            io:format("Out of ~p lightning strikes, ~p were within the Skane area\n",
+                      [length(LightningStrikes), length(SkaneFilteredStrikes)]);
+        _List ->
+            {ok, {{Year, Month, Day}, {Hour, Minute, Second}}} = lightning_strike_filter:get_time_of_latest_strike(SkaneFilteredStrikes),
+            DateTimeString = lists:flatten(io_lib:format("~2..0B:~2..0B:~2..0B ~4..0B-~2..0B-~2..0B", [Hour, Minute, Second, Year, Month, Day])),
+            io:format("Out of ~p lightning strikes, ~p were within the Skane area, with the latest strike occuring at ~s\n",
+                      [length(LightningStrikes), length(SkaneFilteredStrikes), DateTimeString])
+    end,
+    ok.
